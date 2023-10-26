@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  api:
+    image: vikunja/api:latest
+    environment:
+      VIKUNJA_DATABASE_HOST: db
+      VIKUNJA_DATABASE_PASSWORD: supersecret
+      VIKUNJA_DATABASE_TYPE: mysql
+      VIKUNJA_DATABASE_USER: vikunja
+      VIKUNJA_DATABASE_DATABASE: vikunja
+      VIKUNJA_SERVICE_JWTSECRET: <a super secure random secret>
+      VIKUNJA_SERVICE_FRONTENDURL: https://vikunja.mathdesigns.xyz/
+    volumes: 
+      - /home/math/Documents/vikunja/files:/app/vikunja/files
+    networks:
+      - traefik_default
+    depends_on:
+      - db
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vikunja-api.rule=Host(`vikunja.mathdesigns.xyz`) && (PathPrefix(`/api/v1`) || PathPrefix(`/dav/`) || PathPrefix(`/.well-known/`))"
+      - "traefik.http.routers.vikunja-api.entrypoints=websecure"
+      - "traefik.http.routers.vikunja-api.tls.certResolver=production"
+  frontend:
+    image: vikunja/frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vikunja-frontend.rule=Host(`vikunja.mathdesigns.xyz`)"
+      - "traefik.http.routers.vikunja-frontend.entrypoints=websecure"
+      - "traefik.http.routers.vikunja-frontend.tls.certResolver=production"
+    networks:
+      - traefik_default
+    restart: unless-stopped
+  db:
+    image: mariadb:10
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: supersupersecret
+      MYSQL_USER: vikunja
+      MYSQL_PASSWORD: supersecret
+      MYSQL_DATABASE: vikunja
+    volumes:
+      - /home/math/Documents/vikunja/db:/var/lib/mysql
+    networks:
+      - traefik_default
+    restart: unless-stopped
+
+networks:
+  traefik_default:
+    external: true

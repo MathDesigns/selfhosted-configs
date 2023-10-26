@@ -1,0 +1,20 @@
+version: '3'
+services:
+  wg-easy:
+    image: weejewel/wg-easy
+    container_name: wg-easy
+    environment:
+      - WG_HOST=JUSTFILLHERETOCOMPLETE
+      - PASSWORD=JUSTFILLHERETOCOMPLETE
+      - WG_PORT=53
+      - WG_DEFAULT_ADDRESS=192.168.215.x # Replace x with your desired value
+    ports:
+      - "53:51820/udp"
+      - "51821:51821/tcp"
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.ip_forward=1

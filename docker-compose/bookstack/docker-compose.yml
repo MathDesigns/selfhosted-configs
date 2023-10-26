@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  bookstack:
+    image: linuxserver/bookstack
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - APP_URL=https://books.mathdesigns.xyz
+      - DB_HOST=bookstack_db
+      - DB_PORT=3306
+      - DB_USER=bookstack
+      - DB_PASS=JUSTFILLHERETOCOMPLETE
+      - DB_DATABASE=bookstackapp
+    restart: always
+    networks:
+      - traefik_default
+    volumes:
+      - bookstack_config:/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bookstack.rule=Host(`books.mathdesigns.xyz`)"
+      - "traefik.http.routers.bookstack.entrypoints=websecure"
+      - "traefik.http.routers.bookstack.tls.certresolver=production"
+    depends_on:
+      - bookstack_db
+  bookstack_db:
+    image: linuxserver/mariadb
+    container_name: bookstack_db
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=JUSTFILLHERETOCOMPLETE
+      - TZ=Europe/Brussels
+      - MYSQL_DATABASE=bookstackapp
+      - MYSQL_USER=bookstack
+      - MYSQL_PASSWORD=JUSTFILLHERETOCOMPLETE
+    restart: always
+    networks:
+      - traefik_default
+    volumes:
+      - bookstack_data:/config
+
+networks:
+  traefik_default:
+    external: true
+
+volumes:
+  bookstack_data:
+  bookstack_config:

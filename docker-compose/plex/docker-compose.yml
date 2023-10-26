@@ -1,0 +1,18 @@
+---
+version: "2.1"
+services:
+  plex:
+    image: linuxserver/plex:latest
+    container_name: plex
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+      - PLEX_CLAIM=JUSTFILLHERETOCOMPLETE
+    ports:
+      - 32400:32400
+    volumes:
+      - /home/math/Documents/Config:/config
+      - /home/math/Documents/Series:/tv
+      - /home/math/Documents/Films:/movies
+    restart: unless-stopped

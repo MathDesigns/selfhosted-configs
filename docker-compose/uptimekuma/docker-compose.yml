@@ -1,0 +1,24 @@
+---
+volumes:
+  uptimekuma-data:
+    driver: local
+services:
+  uptimekuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptimekuma
+    ports:
+      - 3001:3001
+    volumes:
+      - uptimekuma-data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations
+    restart: unless-stopped
+    networks:
+      - traefik_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kuma.rule=Host(`kuma.mathdesigns.xyz`)"
+      - "traefik.http.routers.kuma.entrypoints=websecure"
+      - "traefik.http.routers.kuma.tls.certresolver=production"
+networks:
+  traefik_default:
+    external: true
