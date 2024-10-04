@@ -1,0 +1,29 @@
+---
+version: '3.3'
+services:
+  komga:
+    image: gotson/komga:latest
+    container_name: komga
+    volumes:
+      - type: bind
+        source: /home/math/docker-data/komga/config
+        target: /config
+      - type: bind
+        source: /home/math/docker-data/komga/data
+        target: /data
+      - type: bind
+        source: /etc/timezone #alternatively you can use a TZ environment variable, like TZ=Europe/London
+        target: /etc/timezone
+        read_only: true
+    restart: unless-stopped
+    user: "1000:1000"
+    networks:
+      - traefik_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.komga.rule=Host(`scans.mathdesigns.app`)"
+      - "traefik.http.routers.komga.entrypoints=websecure"
+      - "traefik.http.routers.komga.tls.certresolver=production"
+networks:
+  traefik_default:
+    external: true

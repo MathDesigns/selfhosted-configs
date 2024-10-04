@@ -1,0 +1,42 @@
+version: '3'
+services:
+  database:
+    image: postgres:13.4-alpine
+    environment:
+      - POSTGRES_USER=REDACTED
+      - POSTGRES_PASSWORD=REDACTED
+      - POSTGRES_DB=REDACTED
+    volumes:
+      - /home/math/docker-data/hedgedoc/database:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - traefik_default
+  app:
+    # Make sure to use the latest release from https://hedgedoc.org/latest-release
+    image: quay.io/hedgedoc/hedgedoc:1.9.9
+    environment:
+      - CMD_DB_URL=postgres://REDACTED:REDACTED@database:5432/REDACTED
+      - CMD_DOMAIN=hedge.mathdesigns.app
+      - CMD_PROTOCOL_USESSL=true
+      - CMD_URL_ADDPORT=false
+
+    volumes:
+      - /home/math/docker-data/hedgedoc/uploads:/hedgedoc/public/uploads
+    ports:
+      - "3002:3000"
+    restart: always
+    depends_on:
+      - database
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.hedgedoc.rule=Host(`hedge.mathdesigns.app`)"
+      - "traefik.http.routers.hedgedoc.entrypoints=websecure"
+      - "traefik.http.routers.hedgedoc.tls.certResolver=production"
+    networks:
+      - traefik_default
+networks:
+  traefik_default:
+    external: true
+volumes:
+  database:
+  uploads:

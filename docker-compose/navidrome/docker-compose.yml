@@ -1,0 +1,24 @@
+version: "3"
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    restart: unless-stopped
+    environment:
+      # Optional: put your config options customization here. Examples:
+      ND_SCANSCHEDULE: 1h
+      ND_LOGLEVEL: info  
+      ND_SESSIONTIMEOUT: 24h
+      ND_BASEURL: "https://music.mathdesigns.app"
+    volumes:
+      - "/home/math/docker-data/navidrome-data:/data"
+      - "/home/math/docker-data/music:/music:ro"
+    networks:
+      - traefik_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.navidrome.rule=Host(`music.mathdesigns.app`)"
+      - "traefik.http.routers.navidrome.entrypoints=websecure"
+      - "traefik.http.routers.navidrome.tls.certresolver=production"
+networks:
+  traefik_default:
+    external: true

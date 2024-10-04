@@ -1,0 +1,21 @@
+services:
+  glance:
+    image: glanceapp/glance:latest
+    volumes:
+      - /home/math/docker-data/glance/glance.yml:/app/glance.yml
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.glance.rule=Host(`feed.mathdesigns.app`)"
+      - "traefik.http.routers.glance.entrypoints=websecure"
+      - "traefik.http.routers.glance.tls.certresolver=production"
+    ports:
+      - 8089:8080
+    networks:
+      - traefik_default
+    restart: unless-stopped
+
+networks:
+  traefik_default:
+    external: true
