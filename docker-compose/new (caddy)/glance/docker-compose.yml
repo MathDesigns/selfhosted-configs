@@ -1,0 +1,17 @@
+services:
+  glance:
+    image: glanceapp/glance:latest
+    container_name: glance
+    volumes:
+      - /home/math/infra-docker/glance/glance.yml:/app/glance.yml
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8089:8080
+    networks:
+      - caddy
+    restart: unless-stopped
+
+networks:
+  caddy:
+    external: true

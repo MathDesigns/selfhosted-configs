@@ -1,0 +1,58 @@
+theme:
+  background-color: 240 21 15
+  contrast-multiplier: 1.2
+  primary-color: 267 84 81
+  positive-color: 115 54 76
+  negative-color: 343 81 75
+branding:
+  custom-footer: |
+    <p>Powered by <a href="https://mathdesigns.app">MathLab</a></p>
+  logo-url: /assets/logo.png
+  favicon-url: /assets/logo.png
+pages:
+  - name: Home
+    columns:
+      - size: small
+        widgets:
+          - type: twitch-channels
+            channels:
+              - piratesoftware
+              - theprimeagen
+              - asmongold
+
+          - type: monitor
+            cache: 1m
+            title: Services
+            sites:
+              - title: Jellyfin
+                url: https://stream.mathdesigns.app
+              - title: mathdesigns.app
+                url: https://mathdesigns.app
+              - title: azertox.com
+                url: https://www.azertox.com
+
+      - size: full
+        widgets:
+
+          - type: reddit
+            subreddit: selfhosted
+          - type: reddit
+            subreddit: technews
+          - type: reddit
+            subreddit: privacy
+          - type: reddit
+            subreddit: cybersecurity
+
+      - size: small
+        widgets:
+          - type: weather
+            location: Liège, Belgium
+
+          - type: markets
+            markets:
+              - symbol: TSLA
+                name: Tesla
+              - symbol: NVDA
+                name: NVIDIA
+              - symbol: AMD
+                name: AMD

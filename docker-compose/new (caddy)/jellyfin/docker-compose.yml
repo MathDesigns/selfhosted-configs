@@ -1,0 +1,32 @@
+services:
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - JELLYFIN_PublishedServerUrl=https://stream.mathdesigns.app
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - /home/math/infra-docker/jellyfin/config:/config
+      - /home/math/infra-docker/jellyfin/cache:/cache
+      - /home/math/infra-docker/media/movies:/data/movies
+      - /home/math/infra-docker/media/series:/data/tvshows
+    ports:
+      - 8096:8096
+    networks:
+      - caddy
+    restart: 'unless-stopped'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+networks:
+  caddy:
+    external: true
